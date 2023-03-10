@@ -1,6 +1,6 @@
 <script setup>
-import Header from "../components/public/Header.vue";
-import Footer from "../components/public/Footer.vue";
+// import Header from "../components/public/Header.vue";
+// import Footer from "../components/public/Footer.vue";
 import Swiper from "../components/pagesComponent/index/swiper.vue";
 import StaticShow from "../components/pagesComponent/index/staticShow.vue";
 import DynamicalShow from "../components/pagesComponent/index/dynamicalShow.vue";
@@ -9,9 +9,10 @@ import DynamicalShow from "../components/pagesComponent/index/dynamicalShow.vue"
 <template>
     <Header></Header>
     <Swiper></Swiper>
-    <!-- <StaticShow></StaticShow>
+    <StaticShow></StaticShow>
     <DynamicalShow></DynamicalShow>
-    <Footer></Footer> -->
+    <Footer></Footer>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

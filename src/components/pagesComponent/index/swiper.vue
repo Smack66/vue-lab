@@ -2,23 +2,18 @@
 <!-- <template>
     <section class="swiper">Swiper</section>
 </template> -->
-<style scoped>
-.swiper{ 
-    font-size: 15rem;
-    text-align: center;
-    line-height: 50rem;
-    width: 300rem;
-    height: 50rem;
-    background-color: sandybrown;
-}
-</style>
 
 <template>
-  <el-carousel :interval="5000" arrow="always">
-    <el-carousel-item v-for="item in 4" :key="item">
-      <h3 text="2xl" justify="center">{{ item }}</h3>
-    </el-carousel-item>
-  </el-carousel>
+    <el-carousel 
+      :interval="5000" 
+      arrow="always" 
+      height="30rem"
+    >
+       <el-carousel-item v-for="item in 4" :key="item">
+          <img src="" alt="">
+          <!-- <h3 text="2xl" justify="center">{{ item }}</h3> -->
+       </el-carousel-item>
+    </el-carousel>
 </template>
 
 <style scoped>

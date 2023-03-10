@@ -5,6 +5,8 @@ import commodityList from '../pages/commodityList.vue';
 import commodityDetail from '../pages/commodityDetail.vue';
 import shopcar from '../pages/shopcar.vue';
 import settlement from '../pages/settlement.vue';
+import test from "../pages/test.vue"
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -49,7 +51,12 @@ const router = createRouter({
       path: '/settlement',
       name: 'settlement', 
       component: settlement 
-    }    
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test 
+    }
   ]
 })
 

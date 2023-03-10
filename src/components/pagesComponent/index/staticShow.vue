@@ -1,14 +1,17 @@
 <script setup></script>
 <template>
- <section class="staticShow">static show</section>
+ <!-- <section class="staticShow">static show</section> -->
+ <div class="common-layout">
+  <el-container class="salmon h20">
+    <div class="staticShow"></div> 
+  </el-container>
+ </div>
 </template>
 <style scoped>
-.staticShow{ 
-    font-size: 15rem;
-    text-align: center;
-    line-height: 50rem;
-    width: 300rem;
-    height: 50rem;
+.salmon {
     background-color: salmon;
+}
+.h20 { 
+    height: 20rem;
 }
 </style>

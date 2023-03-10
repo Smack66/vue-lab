@@ -4,33 +4,32 @@ import { RouterLink } from 'vue-router';
 <template>
     <div class="common-layout">
        <el-container>
-        <el-header>
-          <RouterLink to="/login">
-            <img src="" alt="" class="user-img">
-            <span class="user-name">用户名</span>
+        <el-header class="h5">
+          <img src="" alt="logo" class="sienna h5 w20">
+          
+          <RouterLink to="/login" class="right sienna">
+            <img src="" alt="" class="sienna h5 w5">
+            <span class="">用户名</span>
           </RouterLink>
        </el-header>
      </el-container>
    </div>
 </template>
-
 <style scoped>
-   header{
-    background-color: rebeccapurple;
-    height: 20rem;
-   } 
-   img.icon {
-    width: 50rem;
-    height: 15rem;
+   .w5 {
+    width: 5rem;
+   }
+   .right {
+    position: absolute;
+    right: 2rem;
+   }
+   .h5 {
+    height: 5rem;
+   }
+   .w20{
+    width: 20rem;
+   }
+   .sienna {
     background-color: sienna;
    }
-   img.user-img {
-    width: 15rem;
-    height: 15rem;
-    background-color: sienna;
-   }
-   span.user-name {
-    font-size: 5rem;
-   } 
-   
 </style>

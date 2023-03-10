@@ -1,30 +1,30 @@
 <script setup></script>
 <template>
-    <section class="dynamicalShow">
-       <div class="grid-box">
-          <div>11111111111</div>
+   <div class="common-layout">
+      <el-container class="seagreen h20">
+        <div class="grid-box">
           <div>1</div>
           <div>1</div>
-       </div> 
-    </section>
+          <div>1</div> 
+        </div>
+      </el-container>
+   </div>
 </template>
 <style scoped>
-.dynamicalShow{ 
-    font-size: 15rem;
-    text-align: center;
-    line-height: 50rem;
-    width: 300rem;
-    height: 50rem;
+.seagreen{
     background-color: seagreen;
 }
+.h20 { 
+    height: 20rem;
+}
 .grid-box{
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    width: 300rem;
-    font-size: 10px;
 }
 .grid-box div {
-    width: 95rem;
+    flex: 30%;
+    margin-left: 20rem;
     background-color: blueviolet;
 }
 
