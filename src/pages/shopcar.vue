@@ -1,5 +1,9 @@
-<script setup></script>
+<script setup>
+import shopCarList from "../components/pagesComponent/index/shopCarList.vue";
+</script>
 <template>
-    shopcar
+   <Header></Header> 
+   <shopCarList></shopCarList>
+   <Footer></Footer>
 </template>
 <style scoped></style>

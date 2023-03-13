@@ -1,5 +1,11 @@
-<script setup></script>
+<script setup>
+import comList from "../components/pagesComponent/index/comList.vue";
+</script>
 <template>
-    Commodity List 
+  <Header></Header>
+  <comList></comList>
+  <Footer></Footer>
 </template>
-<style scoped></style>
+
+<style scoped>
+</style>
