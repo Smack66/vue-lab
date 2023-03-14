@@ -1,27 +1,21 @@
 <script  lang="ts" setup>
 import { Ref, ref, reactive, effect } from 'vue';
-class Commodity {
- name: string
- price: number
- number: number
- constructor(name:string, price:number, number: number){
-    this.name = name 
-    this.price= price 
-    this.number = number 
- }
-}
-//backend or store 
+import { useShopcarStore  } from "../../../stores/shopcar.js"
+import { RouterLink } from 'vue-router';
+import { every } from 'lodash';
+const store = useShopcarStore()
+
 //datasource 
-let itemList: Commodity[]  = [] 
-for(let i=0; i<10; i++){
-   itemList.push(new Commodity(i+"", i*100, i)) 
+//backend or store 
+const itemList = store.itemList
+const checked = store.checked
+//reactive 
+
+for(let i=0; i < itemList.length; i++){
+  checked[i] = false;
 }
-itemList = reactive(itemList)
-// //reactive 
-let totalCheckedPrice: number; 
-let everyTotalPrices: number[] = []
-let test: number = 123
-let checked :any =  reactive([])
+let totalCheckedPrice = store.totalCheckedPrice
+let everyTotalPrices = store.everyTotalPrices 
 // bind
 effect(() => {
   // init
@@ -39,25 +33,24 @@ effect(() => {
   }) 
   totalCheckedPrice = filteredEveryPrice.reduce((preValue, nowValue)=>{
     return preValue + nowValue
-  }, 0)  
+  }, 0) 
 })
-// TEST FOR REACTIVE 
-// console.log(totalPrice);
-// itemList[1].number += 100;
-// console.log(totalPrice);
 
-
-for(let i=0; i < itemList.length; i++){
-  checked[i] = false;
-}
-checked = reactive(checked)
-// checked[5] = true;
-
+//method 
 function addComNumber(index: number){
   itemList[index].number ++;
 }
 function subComNumber(index: number){
   itemList[index].number --; 
+}
+
+function buy(){
+  console.log("go to settlment");
+  store.checked = checked
+  store.itemList = itemList
+  store.totalCheckedPrice = totalCheckedPrice 
+  store.everyTotalPrices =  everyTotalPrices
+  
 }
 </script>
 <template>
@@ -85,12 +78,14 @@ function subComNumber(index: number){
         <button class="add-icon">ADD</button>
         <div class="add-text">Please add</div>
     </div>
-
+    
     <div class="sum-box">
      The total price that is checked : {{ totalCheckedPrice }}
     </div>
     <div class="buy-box">
-      <button>Buy BUy BUy</button>
+      <router-link to="/settlement" @click="buy">
+        <button>Buy Buy Buy</button>
+      </router-link>
     </div>   
    </ul>
 </template>

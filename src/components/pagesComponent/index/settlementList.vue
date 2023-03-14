@@ -1,36 +1,36 @@
 <script lang="ts" setup>
 import { Ref, ref, reactive, effect } from 'vue';
-class Commodity {
- name: string
- price: number
- number: number
- constructor(name:string, price:number, number: number){
-    this.name = name 
-    this.price= price 
-    this.number = number 
- }
-}
+import { useShopcarStore  } from "../../../stores/shopcar.js"
+const store = useShopcarStore()
+const itemList = store.itemList
+const checked = store.checked 
+const totalCheckedPrice = store.totalCheckedPrice
+const  everyTotalPrices = store.everyTotalPrices
 
-//backend-data from shopCar 
-const orderItemList: any[]  = []
-for(let i=0; i<10; i++){
-   orderItemList.push(new Commodity(i+"", i*100, i)) 
-}
+const shopcarItem = itemList
+//filter the data from 
+// one time , don't need to be reactive 
+const settlementItem = shopcarItem.filter((item, index)=>{
+   return checked[index];
+})
+const settlementEveryPrices = everyTotalPrices.filter((item, index) => {
+    return checked[index];
+})
+console.log(everyTotalPrices);
+console.log(settlementEveryPrices);
+  
+
 const addressList = [{value: 'China', label:'China'},{value: 'USA', label:'USA'}]
 let selectedAddress = ref(addressList[0].value)
-// reactive
-let reactiveOrderItemList = reactive(orderItemList)
-
-console.log(this);
-
 </script>
 <template>
-    <div v-for="(item,index) in orderItemList" class="item">
+    <div v-for="(item,index) in settlementItem" class="item">
         <div class="main-box">
            data content:{{ item }} 
            index: {{  index  }}
         </div>
         <div class="right-box">
+            the total price of that item is: {{  settlementEveryPrices[index] }}
         </div>
     </div>  
     <div class="address">
@@ -42,9 +42,11 @@ console.log(this);
               :key="item.value"
               :label="item.label"
               :value="item.value"
-              :disabled="item.disabled"
             />
           </el-select>
+    </div>
+    <div sum-box>
+        total Price is : {{  totalCheckedPrice  }}
     </div>
     <button class="settle">settle</button>
 </template>

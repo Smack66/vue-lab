@@ -4,6 +4,8 @@ import { ref, reactive , Ref } from 'vue';
 let price = ref("$100")
 let comName = ref("Commododity Name")
 let colorList = reactive(["red", "yellow", "green"])
+
+// specific data 
 //intermeddle part 
 const colorLinkMap = new Map<String, String>
 const reacitveColorLinkMap = reactive(colorLinkMap)

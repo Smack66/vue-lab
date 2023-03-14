@@ -15,6 +15,7 @@ const app = createApp(App)
 //gloable registeration 
 app.component("Header", Header)
    .component("Footer", Footer);
+
 app.use(createPinia())
 app.use(router)
 
