@@ -4,7 +4,7 @@ import comList from "../components/pagesComponent/index/comList.vue";
 <template>
   <Header></Header>
   <comList></comList>
-  <Footer></Footer>
+  <Footer style="transform: translateY(5rem)"></Footer>
 </template>
 
 <style scoped>

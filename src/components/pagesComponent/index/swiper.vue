@@ -9,9 +9,10 @@
       arrow="always" 
       height="30rem"
     >
-       <el-carousel-item v-for="item in 4" :key="item">
-          <img src="" alt="">
-          <!-- <h3 text="2xl" justify="center">{{ item }}</h3> -->
+       <el-carousel-item v-for="item in 4" :key="item" class="item">
+          <router-link :to='"com"+item'>
+            <img src="../../../assets/carousel.webp" alt="" style="width:150%; margin-left:-40%">
+          </router-link>
        </el-carousel-item>
     </el-carousel>
 </template>
@@ -32,4 +33,8 @@
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6;
 }
+.item{
+ cursor: pointer; 
+} 
+
 </style>

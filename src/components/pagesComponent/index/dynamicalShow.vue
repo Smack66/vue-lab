@@ -3,16 +3,31 @@
    <div class="common-layout">
       <el-container class="seagreen h20">
         <div class="grid-box">
-          <div>1</div>
-          <div>1</div>
-          <div>1</div> 
+          <div class="item">
+            <router-link :to='"com"+5'>
+              <img src="../../../assets/commodity.webp" style="width: 25rem" alt="">
+            </router-link>
+            <h2>商品</h2> 
+          </div>
+          <div class="item">
+            <router-link :to='"com"+6'>
+              <img src="../../../assets/pad.webp" style="width: 25rem" alt="">
+            </router-link>
+            <h2>商品</h2> 
+          </div>
+          <div class="item">
+           <router-link :to='"com"+7'>
+            <img src="../../../assets/phone.webp" style="width: 25rem" alt="">
+            </router-link>
+            <h2>商品</h2> 
+          </div>
         </div>
       </el-container>
    </div>
 </template>
 <style scoped>
 .seagreen{
-    background-color: seagreen;
+    overflow: hidden;
 }
 .h20 { 
     height: 20rem;
@@ -22,10 +37,16 @@
     display: flex;
     justify-content: space-between;
 }
-.grid-box div {
-    flex: 30%;
-    margin-left: 20rem;
-    background-color: blueviolet;
+.grid-box div.item{
+    flex: 100; 
+}
+.item {
+   cursor:pointer;
+   overflow: hidden;
+}
+
+.item h2 {
+  text-align: center;
 }
 
 </style>

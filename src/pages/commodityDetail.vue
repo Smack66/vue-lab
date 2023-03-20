@@ -2,7 +2,6 @@
 import comDetail from "../components/pagesComponent/index/comDetail.vue";
 </script>
 <template>
-    Commodity Detail Detail Detail 
     <Header></Header>
     <comDetail></comDetail>
     <Footer></Footer>

@@ -12,5 +12,22 @@ store.$patch({count: 100})
     
 </template>
 <style scoped></style> -->
-<script setup></script>
-<template></template>
+
+<script setup>
+import {reactive, ref}from "vue"
+let a = ref(true)
+
+
+
+// window.setInterval(()=>{
+//    console.log("trigger");
+//    a.value = !a.value 
+   
+// }, 1000)
+</script>
+<template>
+{{ a }}
+  <div v-if="a"> block 1</div>
+  <div v-if="!a"> block 2</div>
+
+</template>

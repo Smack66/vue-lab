@@ -7,7 +7,7 @@ import DynamicalShow from "../components/pagesComponent/index/dynamicalShow.vue"
 </script>
 
 <template>
-    <Header></Header>
+    <Header style="margin-bottom: 2rem"></Header>
     <Swiper></Swiper>
     <StaticShow></StaticShow>
     <DynamicalShow></DynamicalShow>

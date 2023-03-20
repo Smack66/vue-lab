@@ -1,18 +1,17 @@
 <script setup></script>
 <template>
  <div class="common-layout">
-    <el-container class="cadetblue h10">
-      <el-footer>Footer</el-footer>
+    <el-container class="cadetblue h5">
+      <el-footer style="text-align: center">Footer</el-footer>
     </el-container>
   </div> 
 </template>
 <style scoped>
 .cadetblue {
-   background-color:cadetblue;
-  
+   background-color:gray;
 }
-.h10 {
-   height: 10rem;
+.h5{
+   height: 5rem;
 }
 </style>
 
