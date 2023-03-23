@@ -1,13 +1,10 @@
-<script  setup>
-import { ref, reactive, effect  } from 'vue';
-import { RouterLink  } from 'vue-router';
+<script  setup lang="ts">
+import { ref, reactive, effect, Ref  } from 'vue';
 import { useDetailStore } from "../../../stores/commodityDetail.js"
-import {  useShopcarStore } from "../../../stores/shopcar.js"
+import {  useShopcarStore } from "../../../stores/shopcar.ts"
 import { useSettlementStore } from "../../../stores/settlment.js"
 import { useRoute, useRouter } from 'vue-router';
-import { formItemValidateStates } from 'element-plus';
 
-const store = useShopcarStore()
 const detailStore = useDetailStore()
 const router = useRouter()
 
@@ -26,17 +23,17 @@ let picked = ref("red");
 // let picLink = ref(reacitveColorLinkMap.get(picked.value))
 let commodityInShopcar = reactive({name: comName, price: price, color: picked, number: 1, src: commodity.link })
 
-let minCountDisabled = ref(false) 
+let minCountDisabled: Ref<boolean> =  ref(false) 
 effect(()=>{
   if(commodityInShopcar.number <=1) {
-   minCountDisabled = true
+   minCountDisabled.value = true
   }else {
-   minCountDisabled = false 
+   minCountDisabled.value = false 
   }
-  console.log(minCountDisabled);
+//   console.log(minCountDisabled);
 })
 
-function addShopcar(){
+function addShopcar(): void{
    const shopcarStore = useShopcarStore()
    let flag = false 
    for(let i=0; i<shopcarStore.itemList.length ; i++){
@@ -52,7 +49,7 @@ function addShopcar(){
    }
    
 }
-function settlement(){
+function settlement(): void{
   console.log(router);
   router.push({
      path:"/settlement"
@@ -62,10 +59,10 @@ function settlement(){
   settlementStore.singleCommodity.a = commodity
   settlementStore.origin = "detail"
 }
-function addComNumber(index){
+function addComNumber(index: number): void{
    commodityInShopcar.number++
 }
-function subComNumber(index){
+function subComNumber(index: number): void{
    commodityInShopcar.number--
 }
 </script>

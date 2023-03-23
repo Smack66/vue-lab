@@ -3,23 +3,19 @@ import { Ref, ref, reactive, effect } from 'vue';
 import { useShopcarStore } from "../../../stores/shopcar.js"
 import { useSettlementStore } from "../../../stores/settlment.js"
 import { RouterLink } from 'vue-router';
-import { every } from 'lodash';
 const store = useShopcarStore()
-const settlementStore = useShopcarStore()
-
+const settlementStore = useSettlementStore()
 //datasource 
 //backend or store 
 const itemList = store.itemList
 const checked = store.checked
 //reactive 
-const a: string = "123";
-console.log(a);
 for(let i=0; i < itemList.length; i++){
   checked[i] = false;
 }
 let totalCheckedPrice = store.totalCheckedPrice
 let everyTotalPrices = store.everyTotalPrices 
-let disabled = reactive([])
+let disabled: Array<boolean> = reactive([])
 // bind
 effect(() => {
   // init
@@ -53,12 +49,12 @@ function addComNumber(index: number){
 function subComNumber(index: number){
   itemList[index].number --; 
 }
-function deleteItem(index){
+function deleteItem(index: number): void{
   bias = reactive([])
   itemList.splice(index, 1)
   checked.splice(index, 1)
 }
-function buy(){
+function buy(): void{
   settlementStore.origin = "" 
   store.checked = checked
   store.itemList = itemList
@@ -67,19 +63,19 @@ function buy(){
 }
 
 
-let bias = reactive([]) ; 
-let flag = [];
-let scrollLeft ;
-let downX;
+let bias: Array<number|string> = reactive([]) ; 
+let flag: Array<boolean> = [];
+let scrollLeft : number;
+let downX: number;
 
-
-function touchdown(index, e){
+// the function that handle the event 
+function touchdown(index: number, e: any): void{
 //  console.log("down", e.touches[0].screenX);
  flag[index] = true;
  downX = e.touches[0].screenX
  scrollLeft = e.scrollLeft 
 }
-function touchmove(index,e){
+function touchmove(index: number,e: any): void{
 // console.log("moving", e.clientX);
   if(flag[index]){
     const nowX = e.touches[0].screenX
@@ -93,8 +89,7 @@ function touchmove(index,e){
     // console.log("bias:",bias);
   }
 }
-function touchup(index, e){
-  // console.log("up", e.clientX);
+function touchup(index: number, ): void{
   if(flag){
     flag[index]= false;
   }

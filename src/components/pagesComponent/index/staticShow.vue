@@ -1,7 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { reactive } from 'vue';
-window.onscroll = function (){
-  const position = document.documentElement.scrollTop
+// how to design the interface of the Animation ? 
+type AnimationClassObject = {"animated-up": boolean} | {"animated-down": boolean} | {"animated-left": boolean} | {"animated-right": boolean}
+// Is there any better solution of that ? 
+const fontAnimation: AnimationClassObject= reactive({['animated-up']: false})
+const bottomAnimation: AnimationClassObject = reactive({['animated-up']: false})
+const upAnimation: AnimationClassObject =reactive({['animated-down']: false})
+const rightAnimation: AnimationClassObject = reactive({['animated-left']: false})
+
+window.onscroll = function (): void{
+  const position : number  = document.documentElement.scrollTop
   if(position > 40){
       fontAnimation['animated-up'] = true
       bottomAnimation['animated-up'] = true
@@ -14,10 +22,6 @@ window.onscroll = function (){
       rightAnimation['animated-left'] = false 
   }
 }
-const fontAnimation = reactive({['animated-up']: false})
-const bottomAnimation = reactive({['animated-up']: false})
-const upAnimation =reactive({['animated-down']: false})
-const rightAnimation = reactive({['animated-left']: false})
 </script>
 <template>
  <!-- <section class="staticShow">static show</section> -->

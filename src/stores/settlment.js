@@ -3,6 +3,6 @@ import { defineStore } from 'pinia'
 
 export const useSettlementStore = defineStore('settlement', () => {
   let origin = ref("")
-  let singleCommodity = reactive({a:""})
+  let singleCommodity = reactive({a:{}})
   return {origin, singleCommodity }
 })

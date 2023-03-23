@@ -21,24 +21,22 @@ let settlementItem = shopcarItem.filter((item, index)=>{
 let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
     return checked[index];
 })
-
-
 if(settlementStore.origin === "detail"){
    let commodity = settlementStore.singleCommodity.a;
    settlementItem = reactive([commodity])
-   settlementEveryPrices = reactive([commodity.price]) 
-   totalCheckedPrice = commodity.price
+  //  settlementEveryPrices = reactive([commodity.price]) 
+  //  totalCheckedPrice = commodity.price
 }
 const addressList = [{value: 'China ZhejiangProvince Ningbo Binjiang', label:'China'},{value: 'USA Sanfranscico Morolgo', label:'USA'}]
 let selectedAddress = ref(addressList[0].value)
 
-function removeItem(){
+function removeItem(): void{
   // after filter, remove the corresponding item
   store.itemList = itemList.filter((item, index)=>{
   return !checked[index] 
 })
 }
-function settleSuccess(){
+function settleSuccess(): void{
     removeItem()
     const path = "/index"
     alert("付款成功")
@@ -46,13 +44,14 @@ function settleSuccess(){
       router.push({path}) 
     },3000)
 }
+
 const addressStyle = reactive({animatedUp : false,"address": true})
 let selected = ref(true) 
-function confirm(){
+function confirm(): void{
   addressStyle.animatedUp= true;
   selected.value = false 
 }
-function selectAddress(){
+function selectAddress(): void{
   addressStyle.animatedUp = false;
   selected.value = true 
 }

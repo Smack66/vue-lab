@@ -1,8 +1,9 @@
-<script  setup>
+<script  setup lang="ts">
 import { reactive, ref } from 'vue';
+import { Store } from 'pinia';
 import { commodityList, totalLen as lenTotal } from "../../../../mock/commodityListData"
 import { useDetailStore } from "../../../stores/commodityDetail.js"
-import { RouterLink , useRouter } from 'vue-router';
+import {  useRouter } from 'vue-router';
 const detailStore = useDetailStore()
 const itemItems = reactive(commodityList);
 const totalLen = ref(lenTotal);
@@ -14,20 +15,19 @@ const small = ref(false)
 const background = ref(false)
 const disabled = ref(false)
 
-const handleSizeChange = (val) => {
-  console.log(`${val} items per page`)
-}
-const handleCurrentChange = (val) => {
-  console.log(`current page: ${val}`)
-}
+// const handleSizeChange = (val) => {
+//   console.log(`${val} items per page`)
+// }
+// const handleCurrentChange = (val) => {
+//   console.log(`current page: ${val}`)
+// }
 
-function changeCurrentDetail (index){
+function changeCurrentDetail (index: number): void{
  router.push({
   path:'commodityDetail'
  })
  let currentCommodity  = (itemItems[currentPage.value][index]);
  detailStore.currentCommodity = currentCommodity;
- window.localStorage.setItem("currentCommodity", currentCommodity)
 }
 </script>
 <template>

@@ -1,23 +1,23 @@
 <script  setup lang="ts">
 import { ref, effect, Ref } from 'vue';
-import { RouterLink , useRouter } from 'vue-router';
+import { RouterLink , useRouter, Router } from 'vue-router';
+import { Store } from 'pinia';
 import {useLoginStore} from "../../../src/stores/login.js"
-import {useShopcarStore} from "../../../src/stores/shopcar.js"
+import {useShopcarStore} from "../../stores/shopcar.ts"
+// Router
+const router: Router = useRouter()
 // Shopcar Store
 const shopcarStore = useShopcarStore()
 const itemList = shopcarStore.itemList
 let itemNumber: Ref<Number> = ref(shopcarStore.itemList.length)
 // Login Store
-const store = useLoginStore()
-const router = useRouter()
-const ifLogin = (store.ifLogin)
-const userName = store.userName;
+const loginStore = useLoginStore()
+const ifLogin = loginStore.ifLogin
+const userName = loginStore.userName;
 
-function validateLogin(){
-   const token = window.localStorage.getItem("token")
-   return token === "testToken"
-}
-function clickShopcar(){
+
+//interactive methods
+function clickShopcar(): void{
  if(ifLogin) {
   to("/shopcar")
   return;
@@ -27,18 +27,14 @@ function clickShopcar(){
  to("/login")
 }
 
-function to(path){
+function to(path:string): void{
   router.push({path})
 }
-function logout(){
-  store.ifLogin = false; 
+function logout(): void{
+  loginStore.ifLogin = false; 
   window.localStorage.clear()
   to("/index")
 }
-effect(()=>{
-  console.log(store.ifLogin, "gagag");
-})
-  console.log("login state",store.ifLogin);
 </script>
 <template>
     <div class="common-layout">
@@ -58,20 +54,19 @@ effect(()=>{
            @select="handleSelect">
              <el-menu-item index="1" v-if="ifLogin">
                <RouterLink to="/shopcar" style="text-decoration: none;" @click="clickShopcar">
-                 <!-- <img src="" alt="" class="sienna h5 w5"> -->
-                 <span  v-if="store.ifLogin" class="" >购物车{{ shopcarStore.itemList.length}} </span>
+                 <span  v-if="loginStore.ifLogin" class="" >购物车{{ shopcarStore.itemList.length}} </span>
                </RouterLink>
               </el-menu-item>
              <el-sub-menu index="2">
                <template #title>
-                <RouterLink v-if="store.ifLogin" to="/index"  style="text-decoration: none;">
+                <RouterLink v-if="loginStore.ifLogin" to="/index"  style="text-decoration: none;">
                   <span  class="" >{{ userName }}</span>
                 </RouterLink>
                 <RouterLink v-else to="/login" style="text-decoration: none;">
                   <span class="" >用户名</span>
                 </RouterLink>
               </template>
-               <el-menu-item  v-if="store.ifLogin" index="2-1" @click="logout">Log out</el-menu-item>
+               <el-menu-item  v-if="loginStore.ifLogin" index="2-1" @click="logout">Log out</el-menu-item>
                <el-menu-item  v-else index="2-3">用户名</el-menu-item>
              </el-sub-menu>
              <el-menu-item index="4">Orders</el-menu-item>
