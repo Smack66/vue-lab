@@ -1,19 +1,18 @@
-<script setup>
-import { ref, effect } from 'vue';
+<script  setup lang="ts">
+import { ref, effect, Ref } from 'vue';
 import { RouterLink , useRouter } from 'vue-router';
 import {useLoginStore} from "../../../src/stores/login.js"
 import {useShopcarStore} from "../../../src/stores/shopcar.js"
+// Shopcar Store
 const shopcarStore = useShopcarStore()
-let itemNumber = ref(shopcarStore.itemList.length)
 const itemList = shopcarStore.itemList
-effect(()=>{
-  itemNumber = shopcarStore.length
-})
+let itemNumber: Ref<Number> = ref(shopcarStore.itemList.length)
+// Login Store
 const store = useLoginStore()
 const router = useRouter()
 const ifLogin = (store.ifLogin)
 const userName = store.userName;
-console.log(store.ifLogin);
+
 function validateLogin(){
    const token = window.localStorage.getItem("token")
    return token === "testToken"
@@ -32,9 +31,9 @@ function to(path){
   router.push({path})
 }
 function logout(){
-console.log("logging out");  
   store.ifLogin = false; 
   window.localStorage.clear()
+  to("/index")
 }
 effect(()=>{
   console.log(store.ifLogin, "gagag");

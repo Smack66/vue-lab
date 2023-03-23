@@ -24,11 +24,11 @@ colorList.forEach((colorItem) => {reacitveColorLinkMap.set(colorItem, "/" + colo
  // user-data
 let picked = ref("red");
 // let picLink = ref(reacitveColorLinkMap.get(picked.value))
-const commodityInShopcar = reactive({name: comName, price: price, color: picked, number: 1, src: commodity.link })
+let commodityInShopcar = reactive({name: comName, price: price, color: picked, number: 1, src: commodity.link })
 
 let minCountDisabled = ref(false) 
 effect(()=>{
-  if(commodityInShopcar.number <=0) {
+  if(commodityInShopcar.number <=1) {
    minCountDisabled = true
   }else {
    minCountDisabled = false 
@@ -41,13 +41,16 @@ function addShopcar(){
    let flag = false 
    for(let i=0; i<shopcarStore.itemList.length ; i++){
       if(shopcarStore.itemList[i].name === commodityInShopcar.name){
-         shopcarStore.itemList[i].number +=   commodityInShopcar.number 
+         shopcarStore.itemList[i].number +=  commodityInShopcar.number 
          flag = true
          break;
       }
    }
-   console.log(flag);
-   if(!flag) shopcarStore.itemList.push(commodityInShopcar)
+   if(!flag){
+    shopcarStore.itemList.push(commodityInShopcar)
+    commodityInShopcar = reactive({name: comName, price: price, color: picked, number: 1, src: commodity.link })
+   }
+   
 }
 function settlement(){
   console.log(router);

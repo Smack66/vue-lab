@@ -21,10 +21,7 @@ let settlementItem = shopcarItem.filter((item, index)=>{
 let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
     return checked[index];
 })
-// after filter, remove the corresponding item
-store.itemList = itemList.filter((item, index)=>{
-  return !checked[index] 
-})
+
 
 if(settlementStore.origin === "detail"){
    let commodity = settlementStore.singleCommodity.a;
@@ -35,8 +32,14 @@ if(settlementStore.origin === "detail"){
 const addressList = [{value: 'China ZhejiangProvince Ningbo Binjiang', label:'China'},{value: 'USA Sanfranscico Morolgo', label:'USA'}]
 let selectedAddress = ref(addressList[0].value)
 
-
+function removeItem(){
+  // after filter, remove the corresponding item
+  store.itemList = itemList.filter((item, index)=>{
+  return !checked[index] 
+})
+}
 function settleSuccess(){
+    removeItem()
     const path = "/index"
     alert("付款成功")
     window.setTimeout(()=>{

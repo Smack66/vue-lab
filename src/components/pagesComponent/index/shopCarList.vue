@@ -12,7 +12,8 @@ const settlementStore = useShopcarStore()
 const itemList = store.itemList
 const checked = store.checked
 //reactive 
-
+const a: string = "123";
+console.log(a);
 for(let i=0; i < itemList.length; i++){
   checked[i] = false;
 }
@@ -29,7 +30,7 @@ effect(() => {
     const price = item.price;
     const number = item.number;
     everyTotalPrices.push(price * number) ;
-    if(number<=0){
+    if(number<=1){
      disabled[index]= true;
     }else {
      disabled[index]= false;
@@ -58,12 +59,9 @@ function deleteItem(index){
   checked.splice(index, 1)
 }
 function buy(){
-  // console.log(settlementStore.origin);
   settlementStore.origin = "" 
-  // console.log("go to settlment");
   store.checked = checked
   store.itemList = itemList
-  console.log(itemList);
   store.totalCheckedPrice = totalCheckedPrice 
   store.everyTotalPrices =  everyTotalPrices
 }
