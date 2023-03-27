@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+            const instance = axios;
+            // settings
+            //   axios.defaults.withCredentials = true;
+            //   const instance = axios.create({
+            //     headers: {
+            //       "Content-Type": "application/x-www-form-urlencoded",
+            //     },
+            //     withCredentials: true,
+            //   });
+            //   // request
+            //   instance
+            //     .post("http://10.2.1.183:7006/auth/login", {
+            //       username: "dev",
+            //       password: "dev",
+            //     })
+            //     .then((suc) => {
+            //       window.suc = suc;
+            //     });
+            //   instance
+            //     .get("http://10.2.1.183:7006/commodity/promotedShoppingCommodityList")
+            //     .then((suc) => console.log(suc.data))
+            //     .catch((e) => {
+            //       console.log("promoted error ", e);
+            //     });
+            axios.defaults.withCredentials = true;
+            axios({
+              url: "http://10.2.1.183:7006/auth/login",
+              method: "post",
+              withCredentials: true,
+              data: {
+                username: "dev",
+                password: "dev",
+              },
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            });
+            axios({
+              url: "http://10.2.1.183:7006/commodity/promotedShoppingCommodityList",
+              method: "get",
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            });
+      const res =await axios
+              .get("/commodity/promotedShoppingCommodityList")
+              .then((suc) => console.log(suc.data))
+              .catch((e) => {
+                console.log("promoted error ");
+              });
+    </script>
+  </body>
+</html>
