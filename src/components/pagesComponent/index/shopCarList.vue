@@ -65,7 +65,6 @@ function buy(): void{
 
 let bias: Array<number|string> = reactive([]) ; 
 let flag: Array<boolean> = [];
-let scrollLeft : number;
 let downX: number;
 
 // the function that handle the event 
@@ -73,7 +72,6 @@ function touchdown(index: number, e: any): void{
 //  console.log("down", e.touches[0].screenX);
  flag[index] = true;
  downX = e.touches[0].screenX
- scrollLeft = e.scrollLeft 
 }
 function touchmove(index: number,e: any): void{
 // console.log("moving", e.clientX);

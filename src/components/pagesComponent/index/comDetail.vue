@@ -17,7 +17,7 @@ let colorList = commodity.color
 //intermeddle part 
 const colorLinkMap = new Map()
 const reacitveColorLinkMap = reactive(colorLinkMap)
-colorList.forEach((colorItem) => {reacitveColorLinkMap.set(colorItem, "/" + colorItem )});
+// colorList.forEach((colorItem) => {reacitveColorLinkMap.set(colorItem, "/" + colorItem )});
  // user-data
 let picked = ref("red");
 // let picLink = ref(reacitveColorLinkMap.get(picked.value))
@@ -74,6 +74,10 @@ function subComNumber(index: number): void{
          <div class="info-box">
             <div class="name">
                <h1>Name</h1>
+               <div v-for="(item, key) in commodity">
+                  {{ key }}
+                  {{  item }}
+               </div>
                {{ comName  }}
             </div>
             <div class="price">
@@ -86,7 +90,7 @@ function subComNumber(index: number): void{
                picture link : {{  colorLinkMap.get(picked) }}
                <div class="mb-2 flex items-center text-sm">
                   <el-radio-group v-model="picked" class="ml-4">
-                    <el-radio v-for="colorItem in colorList" :label="colorItem" size="large">{{ colorItem}} </el-radio>
+                    <!-- <el-radio v-for="colorItem in colorList" :label="colorItem" size="large">{{ colorItem}} </el-radio> -->
                   </el-radio-group>
                </div>
             </div>

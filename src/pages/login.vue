@@ -35,14 +35,15 @@
 </template>
 
 <script setup lang="ts">
+import {request} from "../../axios/request"
 import { ref, reactive} from 'vue'
 import { RouterLink , useRouter } from 'vue-router';
 import type { FormInstance, FormRules } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
-import {useLoginStore} from "../../src/stores/login.js"
+import {useLoginStore} from "../stores/login.js"
+import { resolve } from "path";
 const store = useLoginStore()
 const router = useRouter()
-
 const localStorage = window.localStorage
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
@@ -51,7 +52,6 @@ const ruleForm = reactive({
   password: '',
   region: '',
 })
-
 const rules = reactive<FormRules>({
   password: [
     { required: true, message: 'Please input password name', trigger: 'blur' },
@@ -79,47 +79,69 @@ const rules = reactive<FormRules>({
   ],
 })
 
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      console.log('submit!')
-    } else {
-      console.log('error submit!', fields)
-    }
-  })
-}
 
 //backend to frontend 
 //settoken
-function login(){
- const account = ruleForm.account
+async function login(){
+ const username = ruleForm.account
  const password = ruleForm.password
- if(account==="adminadmin" && password === "adminadmin"){
-  alert("login successfully")
-  updateState(store);
-  window.localStorage.setItem("token","testToken")
-  router.push({path: "/index"})
- }else {
-  alert("login failed")
- }
+ sendLoginRequest({username: username, password: password})
+  .then((suc)=>{
+    return suc.status
+  }).then((status)=>{
+   if(status === 200){
+     alert("login successfully")
+     sendUserInfoRequest().then((suc)=>{
+        const data = suc.data
+        updateState(data);
+        updateLocalStorage(data)
+     })
+     router.push({path: "/index"})   
+   }else{
+     alert("login failed")
+   }
+  })
 }
-function updateState(store){
- store.ifLogin = true; 
- 
- store.userName = ruleForm.account; 
- console.log(store.userName);
+// update the state in the store
+function updateState(data:any){
+    store.ifLogin = true; 
+    store.userName = data.userName;
+    store.nickName = data.nickName;
 }
 
-// const resetForm = (formEl: FormInstance | undefined) => {
-//   if (!formEl) return
-//   formEl.resetFields()
-// }
+function updateLocalStorage(data: any){
+  localStorage.setItem("token","testToken")
+}
 
-// const options = Array.from({ length: 10000 }).map((_, idx) => ({
-//   value: `${idx + 1}`,
-//   label: `${idx + 1}`,
-// }))
+//axios request
+async function sendLoginRequest(data: {username: string, password: string}){
+ return request({
+        url: "/api/auth/login",
+        data:{
+           username: data.username,
+           password: data.password
+        },
+        method: "post",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }).then((suc)=>{
+        console.log(suc);
+        return suc;
+      }); 
+}
+async function sendUserInfoRequest(){
+ return request({
+        url: "/api/user/info",
+        method: "get",
+        withCredentials: true,
+      }).then((suc)=>{
+        console.log(suc);
+        return suc
+      });
+
+}
 </script>
 
 <style>

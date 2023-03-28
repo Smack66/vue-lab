@@ -1,26 +1,34 @@
-<script setup></script>
+<script lang="ts" setup >
+import {request} from "../../../../axios/request"
+import { reactive } from "vue";
+const itemList: Array<any> = reactive([]) 
+sendPromotedRequset().then((data: any)=>{
+ data.forEach((item: any)=> {
+   itemList.push(item) 
+ }); 
+})
+async function sendPromotedRequset(){
+  return request({
+        url: "/api/commodity/promotedShoppingCommodityList",
+        method: "get",
+        withCredentials: true,
+      }).then((suc)=>{
+        console.log("Promoted");
+        console.log(suc.data);
+        return suc.data
+      });
+}
+</script>
 <template>
    <div class="common-layout">
       <el-container class="seagreen h20">
         <div class="grid-box">
-          <div class="item">
-            <router-link :to='"com"+5'>
-              <img src="../../../assets/commodity.webp" style="width: 25rem" alt="">
-            </router-link>
-            <h2>商品</h2> 
-          </div>
-          <div class="item">
-            <router-link :to='"com"+6'>
-              <img src="../../../assets/pad.webp" style="width: 25rem" alt="">
-            </router-link>
-            <h2>商品</h2> 
-          </div>
-          <div class="item">
-           <router-link :to='"com"+7'>
-            <img src="../../../assets/phone.webp" style="width: 25rem" alt="">
-            </router-link>
-            <h2>商品</h2> 
-          </div>
+            <div class="item" v-for="item in itemList">
+              <router-link :to='"com"+5'>
+                <img src="../../../assets/commodity.webp" style="width: 25rem" alt="">
+              {{  item }}
+              </router-link>
+            </div>
         </div>
       </el-container>
    </div>

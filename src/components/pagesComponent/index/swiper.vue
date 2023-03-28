@@ -1,7 +1,7 @@
-<script setup lang="ts"></script>
-<!-- <template>
-    <section class="swiper">Swiper</section>
-</template> -->
+<script setup lang="ts">
+
+</script>
+
 
 <template>
     <el-carousel 
@@ -36,5 +36,4 @@
 .item{
  cursor: pointer; 
 } 
-
 </style>

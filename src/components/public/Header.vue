@@ -2,19 +2,15 @@
 import { ref, effect, Ref } from 'vue';
 import { RouterLink , useRouter, Router } from 'vue-router';
 import { Store } from 'pinia';
-import {useLoginStore} from "../../../src/stores/login.js"
-import {useShopcarStore} from "../../stores/shopcar.ts"
+import {useLoginStore} from "../../stores/login.js"
+import {useShopcarStore} from "../../stores/shopcar"
 // Router
 const router: Router = useRouter()
 // Shopcar Store
 const shopcarStore = useShopcarStore()
-const itemList = shopcarStore.itemList
-let itemNumber: Ref<Number> = ref(shopcarStore.itemList.length)
 // Login Store
 const loginStore = useLoginStore()
 const ifLogin = loginStore.ifLogin
-const userName = loginStore.userName;
-
 
 //interactive methods
 function clickShopcar(): void{
@@ -51,7 +47,7 @@ function logout(): void{
           <el-menu
            class="el-menu-demo"
            mode="horizontal"
-           @select="handleSelect">
+           >
              <el-menu-item index="1" v-if="ifLogin">
                <RouterLink to="/shopcar" style="text-decoration: none;" @click="clickShopcar">
                  <span  v-if="loginStore.ifLogin" class="" >购物车{{ shopcarStore.itemList.length}} </span>
@@ -60,12 +56,13 @@ function logout(): void{
              <el-sub-menu index="2">
                <template #title>
                 <RouterLink v-if="loginStore.ifLogin" to="/index"  style="text-decoration: none;">
-                  <span  class="" >{{ userName }}</span>
+                  <span  class="" >{{ loginStore.userName }}</span>
                 </RouterLink>
                 <RouterLink v-else to="/login" style="text-decoration: none;">
                   <span class="" >用户名</span>
                 </RouterLink>
               </template>
+               <el-menu-item  v-if="loginStore.ifLogin" index="2-2" >{{loginStore.nickName}}</el-menu-item>
                <el-menu-item  v-if="loginStore.ifLogin" index="2-1" @click="logout">Log out</el-menu-item>
                <el-menu-item  v-else index="2-3">用户名</el-menu-item>
              </el-sub-menu>

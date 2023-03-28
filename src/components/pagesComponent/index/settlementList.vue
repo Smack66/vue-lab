@@ -3,7 +3,7 @@ import { Ref, ref, reactive, effect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useShopcarStore  } from "../../../stores/shopcar.js"
 import { useSettlementStore } from "../../../stores/settlment.js"
-
+import { request } from "../../../../axios/request"
 
 const router = useRouter()
 const settlementStore = useSettlementStore()
@@ -27,8 +27,27 @@ if(settlementStore.origin === "detail"){
   //  settlementEveryPrices = reactive([commodity.price]) 
   //  totalCheckedPrice = commodity.price
 }
-const addressList = [{value: 'China ZhejiangProvince Ningbo Binjiang', label:'China'},{value: 'USA Sanfranscico Morolgo', label:'USA'}]
-let selectedAddress = ref(addressList[0].value)
+const addressList: Array<any> = reactive([]) 
+
+sendUserInfoRequest().then((data)=>{
+  console.log(data.addressList);
+  
+  data.addressList.forEach((item: any)=> {
+    console.log("1",item);
+   addressList.push(item) 
+  });
+})
+async function sendUserInfoRequest(): Promise<any> {
+  return request({
+    url: "/api/user/info",
+    method: "get",
+    withCredentials: true,
+  }).then((suc) => {
+    return suc.data;
+  });
+}
+
+let selectedAddress = ref(addressList[0])
 
 function removeItem(): void{
   // after filter, remove the corresponding item
@@ -74,8 +93,9 @@ function selectAddress(): void{
         <h1>Please select your address</h1>
         <div class="mb-2 flex items-center text-sm slideup">
           <el-radio-group v-model="selectedAddress" class="ml-4">
-             <el-radio :label="item.value" size="large" v-for="item in addressList"  :value="item.value" >
-                {{ item.value}}
+             <el-radio :label="item.addressId" size="large" v-for="item in addressList"  :value="item.addressId" >
+              {{  item }}
+                {{ item.address }}
              </el-radio>
           </el-radio-group>
           <el-button @click="confirm" class="Confirm">确认</el-button>
@@ -83,7 +103,7 @@ function selectAddress(): void{
     </div>
     </div>
 
-    <div sum-box>;
+    <div sum-box>
         total Price is : {{  totalCheckedPrice  }}
     </div>
     <button class="settle" @click="settleSuccess">settle</button>
