@@ -24,14 +24,13 @@ let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
 if(settlementStore.origin === "detail"){
    let commodity = settlementStore.singleCommodity.a;
    settlementItem = reactive([commodity])
-  //  settlementEveryPrices = reactive([commodity.price]) 
-  //  totalCheckedPrice = commodity.price
 }
 const addressList: Array<any> = reactive([]) 
-
+// window.setInterval(() =>{
+//  addressList.push(1) 
+// }, 1000)
 sendUserInfoRequest().then((data)=>{
   console.log(data.addressList);
-  
   data.addressList.forEach((item: any)=> {
     console.log("1",item);
    addressList.push(item) 
@@ -94,6 +93,7 @@ function selectAddress(): void{
         <div class="mb-2 flex items-center text-sm slideup">
           <el-radio-group v-model="selectedAddress" class="ml-4">
              <el-radio :label="item.addressId" size="large" v-for="item in addressList"  :value="item.addressId" >
+              {{  addressList }} 
               {{  item }}
                 {{ item.address }}
              </el-radio>

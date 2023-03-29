@@ -3,6 +3,7 @@ import { Ref, ref, reactive, effect } from 'vue';
 import { useShopcarStore } from "../../../stores/shopcar.js"
 import { useSettlementStore } from "../../../stores/settlment.js"
 import { RouterLink } from 'vue-router';
+import { request  } from "../../../../axios/request"
 const store = useShopcarStore()
 const settlementStore = useSettlementStore()
 //datasource 
@@ -41,12 +42,19 @@ effect(() => {
     return preValue + nowValue
   }, 0) 
 })
-
+const sendAddShopcar = sendOperateShopCar("add") 
+const sendDeleteShopcar = sendOperateShopCar("delete") 
 //method 
 function addComNumber(index: number){
+  // const commodityId = itemList[index].commodityId
+  const shopcarCommodityId = itemList[index].shoppingCommodityId
+  sendAddShopcar(shopcarCommodityId, 1)
   itemList[index].number ++;
 }
 function subComNumber(index: number){
+  // const commodityId = itemList[index].commodityId
+  const shopcarCommodityId = itemList[index].shoppingCommodityId
+  sendDeleteShopcar(shopcarCommodityId, 1)
   itemList[index].number --; 
 }
 function deleteItem(index: number): void{
@@ -62,7 +70,25 @@ function buy(): void{
   store.everyTotalPrices =  everyTotalPrices
 }
 
-
+function sendOperateShopCar(operation: string): Function {
+  return async function (id: number, count: number) : Promise<any>{
+    let method: string = "";
+    if(operation === "add") method = "post" 
+    else if(operation === "delete") method = "delete" 
+    else {
+      throw "wrong operation"
+    }
+    return request({
+      url:`/api/user/shopping/cart/${id}/${count}`,
+      method: method,
+      withCredentials: true,
+    }).then((suc) => {
+      console.log(suc.data);
+      return suc.data;
+    });  
+  }
+  
+}
 let bias: Array<number|string> = reactive([]) ; 
 let flag: Array<boolean> = [];
 let downX: number;
@@ -95,25 +121,20 @@ function touchup(index: number, ): void{
 </script>
 <template>
    <ul class="listContainer">
-    <!-- <h2>Commodity Object List</h2>
+    <h2>Commodity Object List</h2>
     <div v-for="item in itemList">
         {{  item  }}
-    </div> -->
-        <!-- @mousedown="down(index, $event)" @mousemove="move(index, $event)" @mouseup="up(index, $event)" -->
-
+    </div>
     <h2 class="empty" v-if="itemList.length===0">Please add at least one commodity</h2>
     <div v-for="(item,index) in itemList" class="item" >
         <div class="main-box" :style="{marginLeft:bias[index]}"
         @touchstart="touchdown(index, $event)" @touchmove="touchmove(index, $event)" @touchend="touchup(index, $event)">
            <el-checkbox v-model="checked[index]" :label="item.name" size="large" />
-           <!-- {{ item }}  -->
-           <!-- {{ bias}} -->
            <img src="../../../assets/com.webp" alt="" style="width: 5rem; height: 5rem; transform: translateY(30%) ">
            <div class="container" style="transform: translate(4%, 55%)">
             <div class="name">name:{{item.name}}</div>
             <div class="price">Price: {{item.price}}</div>
            </div>
-           <!-- index: {{  index  }} -->
         </div>
         <div class="button-group" style="text-align:center;">
            <el-button @click="deleteItem(index)">delete</el-button> 
@@ -125,11 +146,6 @@ function touchup(index: number, ): void{
            {{ everyTotalPrices[index] }}
         </div>
     </div>
-    <!-- <div  class="addCom" >
-        <button class="add-icon" >ADD</button>
-        <div class="add-text">Please add</div>
-    </div> -->
-    
     <div class="sum-box" style="background-color: orange; color: white; height: 10rem;font-size: 4rem; text-align: center">
      The total price that is checked : {{ totalCheckedPrice }}
     </div>

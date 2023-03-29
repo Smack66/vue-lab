@@ -16,7 +16,7 @@ const background = ref(false)
 const disabled = ref(false)
 const commodityList:Array<any> = []
 const itemItems: Array<any> = reactive(commodityList);
-//request 
+
 sendAllCommodityListRequest().then((data)=> {
   const splicedItems = spliceItems(data, 10)
   splicedItems.forEach((item)=> {

@@ -18,6 +18,8 @@ async function sendPromotedRequset(){
         return suc.data
       });
 }
+
+
 </script>
 <template>
    <div class="common-layout">
@@ -25,7 +27,7 @@ async function sendPromotedRequset(){
         <div class="grid-box">
             <div class="item" v-for="item in itemList">
               <router-link :to='"com"+5'>
-                <img src="../../../assets/commodity.webp" style="width: 25rem" alt="">
+                <img src="@/assets/mobile-icon.jpg" style="width: 25rem" alt="">
               {{  item }}
               </router-link>
             </div>

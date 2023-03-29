@@ -1,56 +1,61 @@
 <script  setup lang="ts">
 import { ref, reactive, effect, Ref  } from 'vue';
 import { useDetailStore } from "../../../stores/commodityDetail.js"
-import {  useShopcarStore } from "../../../stores/shopcar.ts"
+import {  useShopcarStore } from "../../../stores/shopcar"
 import { useSettlementStore } from "../../../stores/settlment.js"
-import { useRoute, useRouter } from 'vue-router';
-
+import { useRouter } from 'vue-router';
+import {request } from "../../../../axios/request"
 const detailStore = useDetailStore()
 const router = useRouter()
 
-const commodity = detailStore.currentCommodity
-//back-end 
-let price = commodity.price 
-let comName = commodity.name
-let colorList = commodity.color
-// specific data 
-//intermeddle part 
-const colorLinkMap = new Map()
-const reacitveColorLinkMap = reactive(colorLinkMap)
-// colorList.forEach((colorItem) => {reacitveColorLinkMap.set(colorItem, "/" + colorItem )});
- // user-data
 let picked = ref("red");
-// let picLink = ref(reacitveColorLinkMap.get(picked.value))
-let commodityInShopcar = reactive({name: comName, price: price, color: picked, number: 1, src: commodity.link })
-
+const commodity = detailStore.currentCommodity
+let nowCommodityObject = reactive({commodityId: commodity.commodityId  , name:commodity.name , price:commodity.price, number: 1, })
 let minCountDisabled: Ref<boolean> =  ref(false) 
+
 effect(()=>{
-  if(commodityInShopcar.number <=1) {
+  if(nowCommodityObject.number <=1) {
    minCountDisabled.value = true
   }else {
    minCountDisabled.value = false 
   }
-//   console.log(minCountDisabled);
 })
+const commodityId = commodity.shoppingCommodityId
+const sendAddShopcar = sendOperateShopCar("add") 
 
 function addShopcar(): void{
    const shopcarStore = useShopcarStore()
-   let flag = false 
-   for(let i=0; i<shopcarStore.itemList.length ; i++){
-      if(shopcarStore.itemList[i].name === commodityInShopcar.name){
-         shopcarStore.itemList[i].number +=  commodityInShopcar.number 
-         flag = true
-         break;
-      }
-   }
-   if(!flag){
-    shopcarStore.itemList.push(commodityInShopcar)
-    commodityInShopcar = reactive({name: comName, price: price, color: picked, number: 1, src: commodity.link })
-   }
+   let currentCommodityExitInShopcarFlag: {flag: boolean, index: number}= currentCommodityExitInShopcar(shopcarStore, nowCommodityObject) 
+   sendAddShopcar(commodityId, nowCommodityObject.number).then((data)=>{
+    const status = data.status
+    if(currentCommodityExitInShopcarFlag.flag){
+       const index = currentCommodityExitInShopcarFlag.index
+       shopcarStore.itemList[index].number +=  nowCommodityObject.number 
+    }
+    else if(!currentCommodityExitInShopcarFlag.flag){
+         commodity.number = nowCommodityObject.number;
+         shopcarStore.itemList.push(commodity)
+    }
+   })
+   
    
 }
+function currentCommodityExitInShopcar(shopcarStore: any, currentCommodity: any): {flag: boolean, index: number}{
+   let flag: boolean = false; 
+   let index: number = -1
+   // judge by ID 
+   for(index=0; index<shopcarStore.itemList.length ; index++){
+         if(shopcarStore.itemList[index].commodityId === nowCommodityObject.commodityId){
+            flag = true
+            break;
+         }
+      }
+   return {
+      flag,
+      index
+   };
+}
 function settlement(): void{
-  console.log(router);
   router.push({
      path:"/settlement"
   })
@@ -60,17 +65,35 @@ function settlement(): void{
   settlementStore.origin = "detail"
 }
 function addComNumber(index: number): void{
-   commodityInShopcar.number++
+   nowCommodityObject.number++
 }
 function subComNumber(index: number): void{
-   commodityInShopcar.number--
+   nowCommodityObject.number--
+}
+function sendOperateShopCar(operation: string): Function {
+  return async function (id: number, count: number) : Promise<any>{
+    let method: string = "";
+    if(operation === "add") method = "post" 
+    else if(operation === "delete") method = "delete" 
+    else {
+      throw "wrong operation"
+    }
+    return request({
+      url:`/api/user/shopping/cart/${id}/${count}`,
+      method: method,
+      withCredentials: true,
+    }).then((suc) => {
+      console.log(suc.data);
+      return suc.data;
+    });  
+  }
 }
 </script>
 <template>
   <div class="common-layout outer">
     <el-container>
        <div class="show-container">
-         <img src="../../../assets/commodity.webp" alt="" class="img"> 
+         <img src="@/assets/mobile-icon.jpg" alt="" class="img"> 
          <div class="info-box">
             <div class="name">
                <h1>Name</h1>
@@ -78,16 +101,15 @@ function subComNumber(index: number): void{
                   {{ key }}
                   {{  item }}
                </div>
-               {{ comName  }}
+               {{ commodity.name}}
             </div>
             <div class="price">
                <h1>Price</h1>
-                 price: {{  price  }} 
+                 price: {{  commodity.price  }} 
             </div>
             <div class="color-option">
                <h1>Color</h1>
                color : {{  picked  }}
-               picture link : {{  colorLinkMap.get(picked) }}
                <div class="mb-2 flex items-center text-sm">
                   <el-radio-group v-model="picked" class="ml-4">
                     <!-- <el-radio v-for="colorItem in colorList" :label="colorItem" size="large">{{ colorItem}} </el-radio> -->
@@ -98,7 +120,7 @@ function subComNumber(index: number): void{
        </div>
        <div style="position: absolute; top: 25rem; left: 34rem">
          <el-button @click="subComNumber" style="height: 1.5rem" :disabled="minCountDisabled">-</el-button>
-           <div class="number" style="display: inline-block"> &nbsp;&nbsp;{{commodityInShopcar.number}}&nbsp;&nbsp;</div>
+           <div class="number" style="display: inline-block"> &nbsp;&nbsp;{{nowCommodityObject.number}}&nbsp;&nbsp;</div>
          <el-button @click="addComNumber" style="height: 1.5rem">+</el-button>
        </div>
        <div class="button-group">

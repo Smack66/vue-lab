@@ -1,4 +1,4 @@
-<script  setup lang="ts">
+<script  lang="ts" setup >
 import { ref, effect, Ref } from 'vue';
 import { RouterLink , useRouter, Router } from 'vue-router';
 import { Store } from 'pinia';
