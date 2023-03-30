@@ -1,6 +1,7 @@
 import { ref, computed, Ref } from "vue";
 import { defineStore } from "pinia";
-import { request } from "../../axios/request";
+import { request } from "../../axios/basic-Request/request";
+import { sendUserInfoRequest } from "../../axios/api-request/user-info";
 export const useLoginStore = defineStore("loginState", () => {
   let ifLogin: Ref<boolean> = ref(false);
   let userName: Ref<string> = ref("userName");
@@ -15,13 +16,3 @@ export const useLoginStore = defineStore("loginState", () => {
   }
   return { ifLogin, nickName, userName };
 });
-
-async function sendUserInfoRequest(): Promise<any> {
-  return request({
-    url: "/api/user/info",
-    method: "get",
-    withCredentials: true,
-  }).then((suc) => {
-    return suc;
-  });
-}

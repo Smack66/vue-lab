@@ -1,13 +1,13 @@
-<script  setup lang="ts">
+<script lang="ts" setup >
 import { reactive, ref } from 'vue';
 import { Store } from 'pinia';
 // import { commodityList, totalLen as lenTotal } from "../../../../mock/commodityListData"
 import { useDetailStore } from "../../../stores/commodityDetail.js"
 import {  useRouter } from 'vue-router';
-import { request } from "../../../../axios/request"
-const detailStore = useDetailStore()
+import { sendAllCommodityListRequest } from '../../../../axios/api-request/commodity-allShoppingCommodityList';
 const totalLen = ref(1000);
 const router = useRouter()
+const detailStore  = useDetailStore()
 // all data above is from back-end
 const currentPage = ref(1)
 const pageSize3 = ref(100)
@@ -22,6 +22,7 @@ sendAllCommodityListRequest().then((data)=> {
   splicedItems.forEach((item)=> {
    itemItems.push(item) 
   });
+  totalLen.value = data.length 
   console.log(itemItems);
 })
 
@@ -47,29 +48,20 @@ function changeCurrentDetail (index: number): void{
  let currentCommodity  = (itemItems[currentPage.value - 1 ][index]);
  detailStore.currentCommodity = currentCommodity;
 }
-async function sendAllCommodityListRequest(){
-  return request({
-        url: "/api/commodity/allShoppingCommodityList",
-        method: "get",
-        withCredentials: true,
-      }).then((suc)=>{
-        // console.log("all shopping");
-        // console.log(suc.data);
-        return suc.data
-      });
-}
+
 </script>
 <template>
   <div class="common-layout">
      <el-container style="height: 50rem">
      <div class="flex-container">
        <div v-for=" (item, index) in itemItems[currentPage - 1]" class="items" @click="changeCurrentDetail(index)">
-          <div v-for="(key, value) in item">{{ value}} : {{ key }} </div>
+          <!-- <div v-for="(key, value) in item">{{ value}} : {{ key }} </div> -->
           <img src="../../../assets/commodity.jpg" alt="" class="commodity_pic"  > 
           <div class="name" >{{ item.name }}  </div>
-          <div class="price">{{ item.price }}  </div>
+          <div class="name" >{{ item.introduce}}  </div>
+          <div class="price"> {{ item.currency }} {{ item.price }}  </div>
           <div class="detail">
-            <a :href="item.link">{{item.link}}</a>
+            <!-- <a :href="item.link">{{item.link}}</a> -->
           </div>
        </div>
      </div>

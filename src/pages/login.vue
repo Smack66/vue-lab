@@ -1,47 +1,10 @@
-<template>
-  <Header></Header>  
-  <div class="form">
-    <h3>账号登录</h3>
-    <el-form
-        ref="ruleFormRef"
-        :model="ruleForm"
-        :rules="rules"
-        :size="formSize"
-        style="position: relative; "> 
-       <el-form-item prop="account>" class="w20">
-           <el-input disabled placeholder="Country or Area" class="w20">
-               <template #append>
-               <el-button style="width:100px">China</el-button>
-               </template>
-           </el-input>
-        </el-form-item>
-        
-        <el-form-item  prop="account" class="w20">
-          <el-input v-model="ruleForm.account" placeholder="Phone/Account/UserName" />
-        </el-form-item>
-        <el-form-item  prop="password" class="w20" placeholder="Password">
-          <el-input v-model="ruleForm.password" type="password" />
-        </el-form-item>
-        <el-form-item>
-          <el-button style="color:blue;">Phone Login</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button style="color:blue;" @click="login">Login</el-button>
-        </el-form-item>
-        {{  localStorage.getItem("token") }}
-    </el-form>
-  </div>  
-  <Footer></Footer>
-</template>
-
-<script setup lang="ts">
-import {request} from "../../axios/request"
+<script lang="ts" setup >
 import { ref, reactive} from 'vue'
-import { RouterLink , useRouter } from 'vue-router';
+import {  useRouter } from 'vue-router';
 import type { FormInstance, FormRules } from 'element-plus'
-import { Search } from '@element-plus/icons-vue'
 import {useLoginStore} from "../stores/login.js"
-import { resolve } from "path";
+import { sendLoginRequest }  from "../../axios/api-request/auth-login"
+import {sendUserInfoRequest} from "../../axios/api-request/user-info"
 const store = useLoginStore()
 const router = useRouter()
 const localStorage = window.localStorage
@@ -80,6 +43,7 @@ const rules = reactive<FormRules>({
 })
 
 
+
 //backend to frontend 
 //settoken
 async function login(){
@@ -91,8 +55,8 @@ async function login(){
   }).then((status)=>{
    if(status === 200){
      alert("login successfully")
-     sendUserInfoRequest().then((suc)=>{
-        const data = suc.data
+     sendUserInfoRequest().then((data)=>{
+        console.log("======");
         updateState(data);
         updateLocalStorage(data)
      })
@@ -103,7 +67,7 @@ async function login(){
   })
 }
 // update the state in the store
-function updateState(data:any){
+function updateState(data: any){
     store.ifLogin = true; 
     store.userName = data.userName;
     store.nickName = data.nickName;
@@ -112,38 +76,44 @@ function updateState(data:any){
 function updateLocalStorage(data: any){
   localStorage.setItem("token","testToken")
 }
-
-//axios request
-async function sendLoginRequest(data: {username: string, password: string}){
- return request({
-        url: "/api/auth/login",
-        data:{
-           username: data.username,
-           password: data.password
-        },
-        method: "post",
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }).then((suc)=>{
-        console.log(suc);
-        return suc;
-      }); 
-}
-async function sendUserInfoRequest(){
- return request({
-        url: "/api/user/info",
-        method: "get",
-        withCredentials: true,
-      }).then((suc)=>{
-        console.log(suc);
-        return suc
-      });
-
-}
 </script>
 
+
+<template>
+  <Header></Header>  
+  <div class="form">
+    <h3>账号登录</h3>
+    <el-form
+        ref="ruleFormRef"
+        :model="ruleForm"
+        :rules="rules"
+        :size="formSize"
+        style="position: relative; "> 
+       <el-form-item prop="account>" class="w20">
+           <el-input disabled placeholder="Country or Area" class="w20">
+               <template #append>
+               <el-button style="width:100px">China</el-button>
+               </template>
+           </el-input>
+        </el-form-item>
+        
+        <el-form-item  prop="account" class="w20">
+          <el-input v-model="ruleForm.account" placeholder="Phone/Account/UserName" />
+        </el-form-item>
+        <el-form-item  prop="password" class="w20" placeholder="Password">
+          <el-input v-model="ruleForm.password" type="password" />
+        </el-form-item>
+        <el-form-item>
+          <el-button style="color:blue;">Phone Login</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button style="color:blue;" @click="login">Login</el-button>
+        </el-form-item>
+        {{  localStorage.getItem("token") }}
+    </el-form>
+  </div>  
+  <Footer></Footer>
+</template>
 <style>
 .input-with-select .el-input-group__prepend {
   background-color: var(--el-fill-color-blank);

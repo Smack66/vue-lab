@@ -1,13 +1,12 @@
 <script  setup lang="ts">
 import { ref, reactive, effect, Ref  } from 'vue';
-import { useDetailStore } from "../../../stores/commodityDetail.js"
-import {  useShopcarStore } from "../../../stores/shopcar"
-import { useSettlementStore } from "../../../stores/settlment.js"
 import { useRouter } from 'vue-router';
-import {request } from "../../../../axios/request"
+import { useDetailStore } from "../../../stores/commodityDetail.js"
+import { useShopcarStore } from "../../../stores/shopcar"
+import { useSettlementStore } from "../../../stores/settlment.js"
+import { sendAddShopcar } from "../../../../axios/api-request/user-shopping-cart"
 const detailStore = useDetailStore()
 const router = useRouter()
-
 let picked = ref("red");
 const commodity = detailStore.currentCommodity
 let nowCommodityObject = reactive({commodityId: commodity.commodityId  , name:commodity.name , price:commodity.price, number: 1, })
@@ -20,12 +19,13 @@ effect(()=>{
    minCountDisabled.value = false 
   }
 })
-const commodityId = commodity.shoppingCommodityId
-const sendAddShopcar = sendOperateShopCar("add") 
+const shoppingCommodityId = commodity.shoppingCommodityId
+const commodityId = commodity.commodityId 
 
 function addShopcar(): void{
    const shopcarStore = useShopcarStore()
    let currentCommodityExitInShopcarFlag: {flag: boolean, index: number}= currentCommodityExitInShopcar(shopcarStore, nowCommodityObject) 
+   // add is short 
    sendAddShopcar(commodityId, nowCommodityObject.number).then((data)=>{
     const status = data.status
     if(currentCommodityExitInShopcarFlag.flag){
@@ -37,9 +37,8 @@ function addShopcar(): void{
          shopcarStore.itemList.push(commodity)
     }
    })
-   
-   
 }
+
 function currentCommodityExitInShopcar(shopcarStore: any, currentCommodity: any): {flag: boolean, index: number}{
    let flag: boolean = false; 
    let index: number = -1
@@ -61,6 +60,7 @@ function settlement(): void{
   })
   const settlementStore = useSettlementStore()
   const commodity = detailStore.currentCommodity
+  commodity.number  = nowCommodityObject.number 
   settlementStore.singleCommodity.a = commodity
   settlementStore.origin = "detail"
 }
@@ -70,24 +70,7 @@ function addComNumber(index: number): void{
 function subComNumber(index: number): void{
    nowCommodityObject.number--
 }
-function sendOperateShopCar(operation: string): Function {
-  return async function (id: number, count: number) : Promise<any>{
-    let method: string = "";
-    if(operation === "add") method = "post" 
-    else if(operation === "delete") method = "delete" 
-    else {
-      throw "wrong operation"
-    }
-    return request({
-      url:`/api/user/shopping/cart/${id}/${count}`,
-      method: method,
-      withCredentials: true,
-    }).then((suc) => {
-      console.log(suc.data);
-      return suc.data;
-    });  
-  }
-}
+
 </script>
 <template>
   <div class="common-layout outer">
@@ -97,19 +80,21 @@ function sendOperateShopCar(operation: string): Function {
          <div class="info-box">
             <div class="name">
                <h1>Name</h1>
-               <div v-for="(item, key) in commodity">
+               <!-- <div v-for="(item, key) in commodity">
                   {{ key }}
                   {{  item }}
-               </div>
+               </div> -->
                {{ commodity.name}}
+               {{ commodity.introduce}}
             </div>
             <div class="price">
                <h1>Price</h1>
-                 price: {{  commodity.price  }} 
+                 price:{{ commodity.currency }} {{  commodity.price  }} 
             </div>
             <div class="color-option">
                <h1>Color</h1>
-               color : {{  picked  }}
+               color : {{  commodity.colorName }}
+               <div style="background-color: gray; width: 20px;display: inline-block">&nbsp;</div>
                <div class="mb-2 flex items-center text-sm">
                   <el-radio-group v-model="picked" class="ml-4">
                     <!-- <el-radio v-for="colorItem in colorList" :label="colorItem" size="large">{{ colorItem}} </el-radio> -->

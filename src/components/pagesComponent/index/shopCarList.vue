@@ -3,13 +3,17 @@ import { Ref, ref, reactive, effect } from 'vue';
 import { useShopcarStore } from "../../../stores/shopcar.js"
 import { useSettlementStore } from "../../../stores/settlment.js"
 import { RouterLink } from 'vue-router';
-import { request  } from "../../../../axios/request"
+import { sendAddShopcar, sendDeleteShopcar } from "../../../../axios/api-request/user-shopping-cart"
+import { sendUserInfoRequest } from "../../../../axios/api-request/user-info";
 const store = useShopcarStore()
 const settlementStore = useSettlementStore()
-//datasource 
-//backend or store 
-const itemList = store.itemList
-const checked = store.checked
+const itemList: Array<any> = reactive([]) 
+const checked: Array<boolean> = reactive([]) 
+sendUserInfoRequest().then((data: any) => {
+  data.cartList.forEach((item: any) => {
+    itemList.push(item);
+  });
+});
 //reactive 
 for(let i=0; i < itemList.length; i++){
   checked[i] = false;
@@ -33,7 +37,6 @@ effect(() => {
      disabled[index]= false;
     }
   })
-  
   //filter item list by the checked array 
   let filteredEveryPrice = everyTotalPrices.filter((item, index) => {
     return checked[index]
@@ -42,53 +45,50 @@ effect(() => {
     return preValue + nowValue
   }, 0) 
 })
-const sendAddShopcar = sendOperateShopCar("add") 
-const sendDeleteShopcar = sendOperateShopCar("delete") 
 //method 
 function addComNumber(index: number){
+  // add is long
   // const commodityId = itemList[index].commodityId
   const shopcarCommodityId = itemList[index].shoppingCommodityId
-  sendAddShopcar(shopcarCommodityId, 1)
-  itemList[index].number ++;
+  sendAddShopcar(shopcarCommodityId, 1).then((data: any) =>{
+    itemList[index].number ++;
+    console.log("Add Successfully");
+  })
 }
 function subComNumber(index: number){
-  // const commodityId = itemList[index].commodityId
-  const shopcarCommodityId = itemList[index].shoppingCommodityId
-  sendDeleteShopcar(shopcarCommodityId, 1)
+  // sub is short
+  const commodityId = itemList[index].commodityId
+  // const shopcarCommodityId = itemList[index].shoppingCommodityId
+  sendDeleteShopcar(commodityId, 1)
   itemList[index].number --; 
 }
 function deleteItem(index: number): void{
-  bias = reactive([])
-  itemList.splice(index, 1)
-  checked.splice(index, 1)
+  const commodityId = itemList[index].commodityId
+  sendDeleteShopcar(commodityId, itemList[index].number).then((suc: any)=>{
+     bias = reactive([])
+     itemList.splice(index, 1)
+     checked.splice(index, 1)  
+  })
+  
 }
 function buy(): void{
+  const settlementItem  = itemList.filter((item, index)=>{
+    return checked[index];
+  })
+  let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
+    return checked[index];
+  })
+  // update the store
   settlementStore.origin = "" 
+  store.settlementItem = settlementItem 
+  store.settlementEveryPrices = settlementEveryPrices
   store.checked = checked
   store.itemList = itemList
   store.totalCheckedPrice = totalCheckedPrice 
   store.everyTotalPrices =  everyTotalPrices
 }
 
-function sendOperateShopCar(operation: string): Function {
-  return async function (id: number, count: number) : Promise<any>{
-    let method: string = "";
-    if(operation === "add") method = "post" 
-    else if(operation === "delete") method = "delete" 
-    else {
-      throw "wrong operation"
-    }
-    return request({
-      url:`/api/user/shopping/cart/${id}/${count}`,
-      method: method,
-      withCredentials: true,
-    }).then((suc) => {
-      console.log(suc.data);
-      return suc.data;
-    });  
-  }
-  
-}
+
 let bias: Array<number|string> = reactive([]) ; 
 let flag: Array<boolean> = [];
 let downX: number;
@@ -133,7 +133,9 @@ function touchup(index: number, ): void{
            <img src="../../../assets/com.webp" alt="" style="width: 5rem; height: 5rem; transform: translateY(30%) ">
            <div class="container" style="transform: translate(4%, 55%)">
             <div class="name">name:{{item.name}}</div>
-            <div class="price">Price: {{item.price}}</div>
+            <div class="price">
+                 price:{{ item.currency }} {{  item.price  }} 
+            </div>
            </div>
         </div>
         <div class="button-group" style="text-align:center;">
@@ -143,11 +145,12 @@ function touchup(index: number, ): void{
            <el-button @click="addComNumber(index)">+</el-button>
            <div class="number" style="display: inline-block">&nbsp;&nbsp; {{item.number}} &nbsp;&nbsp;</div>
            <el-button @click="subComNumber(index)" :disabled="disabled[index]">-</el-button>
+           {{ item.currency }} 
            {{ everyTotalPrices[index] }}
         </div>
     </div>
     <div class="sum-box" style="background-color: orange; color: white; height: 10rem;font-size: 4rem; text-align: center">
-     The total price that is checked : {{ totalCheckedPrice }}
+     The total price that is checked :  ${{ totalCheckedPrice }}
     </div>
     <div class="buy-box" >
       <router-link to="/settlement" @click="buy">

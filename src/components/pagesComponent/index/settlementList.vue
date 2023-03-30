@@ -3,8 +3,8 @@ import { Ref, ref, reactive, effect } from 'vue';
 import { useRouter } from 'vue-router';
 import { useShopcarStore  } from "../../../stores/shopcar.js"
 import { useSettlementStore } from "../../../stores/settlment.js"
-import { request } from "../../../../axios/request"
-
+import { sendUserInfoRequest} from "../../../../axios/api-request/user-info"
+import { sendDeleteShopcar} from "../../../../axios/api-request/user-shopping-cart"
 const router = useRouter()
 const settlementStore = useSettlementStore()
 const store = useShopcarStore()
@@ -13,47 +13,30 @@ let checked = store.checked
 let totalCheckedPrice = store.totalCheckedPrice
 let everyTotalPrices = store.everyTotalPrices
 let shopcarItem = itemList
-//filter the data from 
-// one time , don't need to be reactive 
-let settlementItem = shopcarItem.filter((item, index)=>{
-   return checked[index];
-})
-let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
-    return checked[index];
-})
+let settlementItem = store.settlementItem; 
+let settlementEveryPrices = store.settlementEveryPrices;
+// let settlementItem = shopcarItem.filter((item, index)=>{
+//    return checked[index];
+// })
+// let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
+//     return checked[index];
+// })
 if(settlementStore.origin === "detail"){
    let commodity = settlementStore.singleCommodity.a;
    settlementItem = reactive([commodity])
 }
 const addressList: Array<any> = reactive([]) 
-// window.setInterval(() =>{
-//  addressList.push(1) 
-// }, 1000)
 sendUserInfoRequest().then((data)=>{
-  console.log(data.addressList);
   data.addressList.forEach((item: any)=> {
     console.log("1",item);
    addressList.push(item) 
   });
 })
-async function sendUserInfoRequest(): Promise<any> {
-  return request({
-    url: "/api/user/info",
-    method: "get",
-    withCredentials: true,
-  }).then((suc) => {
-    return suc.data;
-  });
-}
+
 
 let selectedAddress = ref(addressList[0])
 
-function removeItem(): void{
-  // after filter, remove the corresponding item
-  store.itemList = itemList.filter((item, index)=>{
-  return !checked[index] 
-})
-}
+
 function settleSuccess(): void{
     removeItem()
     const path = "/index"
@@ -62,7 +45,18 @@ function settleSuccess(): void{
       router.push({path}) 
     },3000)
 }
-
+function removeItem(): void{
+  // after filter, remove the corresponding item
+  store.itemList = itemList.filter((item, index)=>{
+  if(checked[index]){
+    const commodityId = item.commodityId
+    const number = item.number
+    // const shopcarCommodityId = itemList[index].shoppingCommodityId
+    sendDeleteShopcar(commodityId, number)
+  }
+  return !checked[index] 
+})
+}
 const addressStyle = reactive({animatedUp : false,"address": true})
 let selected = ref(true) 
 function confirm(): void{
@@ -93,9 +87,9 @@ function selectAddress(): void{
         <div class="mb-2 flex items-center text-sm slideup">
           <el-radio-group v-model="selectedAddress" class="ml-4">
              <el-radio :label="item.addressId" size="large" v-for="item in addressList"  :value="item.addressId" >
-              {{  addressList }} 
+              <!-- {{  addressList }}  -->
               {{  item }}
-                {{ item.address }}
+                <!-- {{ item.address }} -->
              </el-radio>
           </el-radio-group>
           <el-button @click="confirm" class="Confirm">确认</el-button>

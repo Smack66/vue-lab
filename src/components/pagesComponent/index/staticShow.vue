@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup >
 import { reactive } from 'vue';
 // how to design the interface of the Animation ? 
 type AnimationClassObject = {"animated-up": boolean} | {"animated-down": boolean} | {"animated-left": boolean} | {"animated-right": boolean}

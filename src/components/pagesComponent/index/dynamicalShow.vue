@@ -1,23 +1,27 @@
 <script lang="ts" setup >
-import {request} from "../../../../axios/request"
+import { sendPromotedRequset } from "../../../../axios/api-request/commodity-promotedShoppingCommodityList"
 import { reactive } from "vue";
+import { useDetailStore } from "../../../stores/commodityDetail";
+import {  useRouter } from 'vue-router';
+const detailStore = useDetailStore()
+const router = useRouter()
 const itemList: Array<any> = reactive([]) 
 sendPromotedRequset().then((data: any)=>{
  data.forEach((item: any)=> {
    itemList.push(item) 
  }); 
 })
-async function sendPromotedRequset(){
-  return request({
-        url: "/api/commodity/promotedShoppingCommodityList",
-        method: "get",
-        withCredentials: true,
-      }).then((suc)=>{
-        console.log("Promoted");
-        console.log(suc.data);
-        return suc.data
-      });
+
+function changeCurrentCommodity(index: number): void{
+ const clickedCommodity =  itemList[index]
+ detailStore.currentCommodity = clickedCommodity;
+ router.push({
+  path:'commodityDetail'
+ })
 }
+
+
+
 
 
 </script>
@@ -25,11 +29,11 @@ async function sendPromotedRequset(){
    <div class="common-layout">
       <el-container class="seagreen h20">
         <div class="grid-box">
-            <div class="item" v-for="item in itemList">
-              <router-link :to='"com"+5'>
-                <img src="@/assets/mobile-icon.jpg" style="width: 25rem" alt="">
-              {{  item }}
-              </router-link>
+            <div class="item" v-for="(item, index) in itemList">
+              <div @click="changeCurrentCommodity(index)">
+                 <img :src='item.src.replace("@", "../../src")'  style="width: 25rem" alt="">
+                 {{  item.name }}
+              </div>
             </div>
         </div>
       </el-container>

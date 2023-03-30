@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup >
 import shopCarList from "../components/pagesComponent/index/shopCarList.vue";
 </script>
 <template>
