@@ -13,30 +13,29 @@ let checked = store.checked
 let totalCheckedPrice = store.totalCheckedPrice
 let everyTotalPrices = store.everyTotalPrices
 let shopcarItem = itemList
-let settlementItem = store.settlementItem; 
-let settlementEveryPrices = store.settlementEveryPrices;
-// let settlementItem = shopcarItem.filter((item, index)=>{
-//    return checked[index];
-// })
-// let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
-//     return checked[index];
-// })
+let settlementItem = shopcarItem.filter((item, index)=>{
+   return checked[index];
+})
+let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
+    return checked[index];
+})
+
 if(settlementStore.origin === "detail"){
    let commodity = settlementStore.singleCommodity.a;
    settlementItem = reactive([commodity])
+   settlementEveryPrices = reactive([commodity.number * commodity.price])
+   totalCheckedPrice = settlementEveryPrices[0]
 }
+
 const addressList: Array<any> = reactive([]) 
 sendUserInfoRequest().then((data)=>{
   data.addressList.forEach((item: any)=> {
-    console.log("1",item);
    addressList.push(item) 
   });
 })
 
 
 let selectedAddress = ref(addressList[0])
-
-
 function settleSuccess(): void{
     removeItem()
     const path = "/index"
@@ -60,7 +59,7 @@ function removeItem(): void{
 const addressStyle = reactive({animatedUp : false,"address": true})
 let selected = ref(true) 
 function confirm(): void{
-  addressStyle.animatedUp= true;
+  addressStyle.animatedUp = true;
   selected.value = false 
 }
 function selectAddress(): void{
@@ -72,35 +71,37 @@ function selectAddress(): void{
     <div v-for="(item,index) in settlementItem" class="item">
         <div class="main-box">
             <img src="../../../assets/com.webp" alt="" style="width: 6rem">
-           data content:{{ item }} 
-           <!-- index: {{  index  }} -->
+           {{  item.name + item.introduce }}
+           {{ item.colorName }}
         </div>
         <div class="right-box">
-            the total price of that item is: {{  settlementEveryPrices[index] }}
+            ${{  settlementEveryPrices[index] }}
         </div>
     </div>  
-    {{ selectedAddress }}
-    <el-button @click="selectAddress" :disabled="selected">Select the address</el-button>
+    <el-button @click="selectAddress" :disabled="selected">请选择地址</el-button>
     <div style="overflow:hidden">
-    <div :class="addressStyle" >
-        <h1>Please select your address</h1>
+    <div :class="addressStyle" style="position: relative; left: 27%;" >
+        <h2>请选择地址</h2>
         <div class="mb-2 flex items-center text-sm slideup">
           <el-radio-group v-model="selectedAddress" class="ml-4">
-             <el-radio :label="item.addressId" size="large" v-for="item in addressList"  :value="item.addressId" >
-              <!-- {{  addressList }}  -->
-              {{  item }}
-                <!-- {{ item.address }} -->
+          <el-radio :label="item.addressId" size="large" v-for="item in addressList"  :value="item.addressId" >
+              {{ item.firstName + item.lastName  }}
+              <br>
+              {{  item.address }}
+              <br>
+              {{  item.phone }}
              </el-radio>
           </el-radio-group>
+          <br>
+          <br>
           <el-button @click="confirm" class="Confirm">确认</el-button>
         </div> 
     </div>
     </div>
-
-    <div sum-box>
-        total Price is : {{  totalCheckedPrice  }}
-    </div>
-    <button class="settle" @click="settleSuccess">settle</button>
+    <h2 sum-box style="text-align:center" >
+        ${{  totalCheckedPrice  }}
+    </h2>
+    <el-button class="settle" @click="settleSuccess" style="position: relative; left: 48%" >结算</el-button>
  
 </template>
 <style scoped>

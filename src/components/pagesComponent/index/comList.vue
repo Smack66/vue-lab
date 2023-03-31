@@ -52,12 +52,12 @@ function changeCurrentDetail (index: number): void{
 </script>
 <template>
   <div class="common-layout">
-     <el-container style="height: 50rem">
+     <el-container style="height: 29rem">
      <div class="flex-container">
        <div v-for=" (item, index) in itemItems[currentPage - 1]" class="items" @click="changeCurrentDetail(index)">
           <!-- <div v-for="(key, value) in item">{{ value}} : {{ key }} </div> -->
           <img src="../../../assets/commodity.jpg" alt="" class="commodity_pic"  > 
-          <div class="name" >{{ item.name }}  </div>
+          <!-- <div class="name" >{{ item.name }}  </div> -->
           <div class="name" >{{ item.introduce}}  </div>
           <div class="price"> {{ item.currency }} {{ item.price }}  </div>
           <div class="detail">
@@ -91,6 +91,7 @@ function changeCurrentDetail (index: number): void{
 .flex-container {
   position: relative;
   left: 50%;
+  top: 10%;
   transform: translateX(-50%);
   display: flex;
   width: 50rem;
@@ -103,11 +104,11 @@ function changeCurrentDetail (index: number): void{
   height: 10rem;
 }
 .commodity_pic {
-  height: 6rem;
+  height: 10rem;
 }
 .pagination{
   position: relative;
-  top: 50rem;
+  top: 30rem;
   left: -12%;
   transform: translateX(-50%);
 }

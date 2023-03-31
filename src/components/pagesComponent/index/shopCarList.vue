@@ -1,5 +1,5 @@
 <script  lang="ts" setup>
-import { Ref, ref, reactive, effect } from 'vue';
+import { reactive, effect } from 'vue';
 import { useShopcarStore } from "../../../stores/shopcar.js"
 import { useSettlementStore } from "../../../stores/settlment.js"
 import { RouterLink } from 'vue-router';
@@ -7,13 +7,9 @@ import { sendAddShopcar, sendDeleteShopcar } from "../../../../axios/api-request
 import { sendUserInfoRequest } from "../../../../axios/api-request/user-info";
 const store = useShopcarStore()
 const settlementStore = useSettlementStore()
-const itemList: Array<any> = reactive([]) 
-const checked: Array<boolean> = reactive([]) 
-sendUserInfoRequest().then((data: any) => {
-  data.cartList.forEach((item: any) => {
-    itemList.push(item);
-  });
-});
+const itemList: Array<any> = store.itemList 
+const checked: Array<boolean> = store.checked 
+
 //reactive 
 for(let i=0; i < itemList.length; i++){
   checked[i] = false;
@@ -72,16 +68,8 @@ function deleteItem(index: number): void{
   
 }
 function buy(): void{
-  const settlementItem  = itemList.filter((item, index)=>{
-    return checked[index];
-  })
-  let settlementEveryPrices = everyTotalPrices.filter((item, index) => {
-    return checked[index];
-  })
   // update the store
   settlementStore.origin = "" 
-  store.settlementItem = settlementItem 
-  store.settlementEveryPrices = settlementEveryPrices
   store.checked = checked
   store.itemList = itemList
   store.totalCheckedPrice = totalCheckedPrice 
@@ -121,23 +109,25 @@ function touchup(index: number, ): void{
 </script>
 <template>
    <ul class="listContainer">
-    <h2>Commodity Object List</h2>
+    <h2>购物车列表</h2>
     <div v-for="item in itemList">
-        {{  item  }}
+        <!-- {{  item  }} -->
     </div>
-    <h2 class="empty" v-if="itemList.length===0">Please add at least one commodity</h2>
+    <h2 class="empty" v-if="itemList.length===0">请选择至少一个商品</h2>
     <div v-for="(item,index) in itemList" class="item" >
         <div class="main-box" :style="{marginLeft:bias[index]}"
         @touchstart="touchdown(index, $event)" @touchmove="touchmove(index, $event)" @touchend="touchup(index, $event)">
            <el-checkbox v-model="checked[index]" :label="item.name" size="large" />
            <img src="../../../assets/com.webp" alt="" style="width: 5rem; height: 5rem; transform: translateY(30%) ">
-           <div class="container" style="transform: translate(4%, 55%)">
-            <div class="name">name:{{item.name}}</div>
-            <div class="price">
-                 price:{{ item.currency }} {{  item.price  }} 
+           <div class="container" style="transform: translate(30%, 10%)">
+            <div class="name" style="">
+              {{ item.introduce }}
+              {{ item.name}}
+              <br>
+              {{item.currency}}{{ item.price }} 
             </div>
-           </div>
-        </div>
+            </div>
+            </div>
         <div class="button-group" style="text-align:center;">
            <el-button @click="deleteItem(index)">delete</el-button> 
            <br>
@@ -149,14 +139,14 @@ function touchup(index: number, ): void{
            {{ everyTotalPrices[index] }}
         </div>
     </div>
-    <div class="sum-box" style="background-color: orange; color: white; height: 10rem;font-size: 4rem; text-align: center">
-     The total price that is checked :  ${{ totalCheckedPrice }}
+    <div class="sum-box" style="position: relative; right: 0;color: red; height: 10rem;font-size: 2rem; text-align: right">
+    总计：     ${{ totalCheckedPrice }}
     </div>
-    <div class="buy-box" >
-      <router-link to="/settlement" @click="buy">
-        <button style="width: 15rem; height: 10rem; font-size: 2rem; " :disabled="!checked.some((item)=>item)">Buy Buy Buy</button>
+    <div class="buy-box" style="text-align: center" >
+      <router-link to="/settlement" @click="buy" style="text-decoration: none">
+        <el-button style="width: 10rem; height: 5rem; font-size: 2rem; " :disabled="!checked.some((item)=>item)">Buy </el-button>
       </router-link>
-    </div>   
+    </div>  
    </ul>
 </template>
 <style scoped>

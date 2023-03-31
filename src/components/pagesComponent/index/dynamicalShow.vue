@@ -32,7 +32,10 @@ function changeCurrentCommodity(index: number): void{
             <div class="item" v-for="(item, index) in itemList">
               <div @click="changeCurrentCommodity(index)">
                  <img :src='item.src.replace("@", "../../src")'  style="width: 25rem" alt="">
-                 {{  item.name }}
+                  <h4 style="text-align: center">
+                    {{ item.introduce }}  
+                    {{  item.name }}
+                  </h4>     
               </div>
             </div>
         </div>

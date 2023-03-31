@@ -6,12 +6,11 @@ export const useLoginStore = defineStore("loginState", () => {
   let ifLogin: Ref<boolean> = ref(false);
   let userName: Ref<string> = ref("userName");
   let nickName: Ref<string> = ref("nickname");
-
   if (window.localStorage.getItem("token") === "testToken") {
     ifLogin.value = true;
     sendUserInfoRequest().then((suc) => {
-      userName.value = suc.data.userName;
-      nickName.value = suc.data.nickName;
+      userName.value = suc.userName;
+      nickName.value = suc.nickName;
     });
   }
   return { ifLogin, nickName, userName };

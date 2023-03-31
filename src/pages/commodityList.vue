@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import comList from "../components/pagesComponent/index/comList.vue";
 </script>
 <template>

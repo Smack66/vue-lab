@@ -78,7 +78,6 @@ function updateLocalStorage(data: any){
 }
 </script>
 
-
 <template>
   <Header></Header>  
   <div class="form">

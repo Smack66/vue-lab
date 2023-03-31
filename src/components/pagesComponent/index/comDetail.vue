@@ -26,16 +26,26 @@ function addShopcar(): void{
    const shopcarStore = useShopcarStore()
    let currentCommodityExitInShopcarFlag: {flag: boolean, index: number}= currentCommodityExitInShopcar(shopcarStore, nowCommodityObject) 
    // add is short 
-   sendAddShopcar(commodityId, nowCommodityObject.number).then((data)=>{
-    const status = data.status
-    if(currentCommodityExitInShopcarFlag.flag){
-       const index = currentCommodityExitInShopcarFlag.index
-       shopcarStore.itemList[index].number +=  nowCommodityObject.number 
-    }
-    else if(!currentCommodityExitInShopcarFlag.flag){
-         commodity.number = nowCommodityObject.number;
-         shopcarStore.itemList.push(commodity)
-    }
+   sendAddShopcar(commodityId, nowCommodityObject.number).then((data: any)=>{
+   shopcarStore.itemList = data.cartList
+   //  const status = data.status
+   //  commodity.shoppingCommodityId = nowCommodityObject.commodityId 
+   // //  commodity.commodityId = 
+   //  data.cartList.forEach(( item: any )=> {
+
+   //    if(commodity.shoppingCommodityId === item.shoppingCommodityId){
+   //       console.log(111);
+   //       commodity.commodityId = item.commodityId
+   //    }  
+   //  });
+   //  if(currentCommodityExitInShopcarFlag.flag){
+   //     const index = currentCommodityExitInShopcarFlag.index
+   //     shopcarStore.itemList[index].number +=  nowCommodityObject.number 
+   //  }
+   //  else if(!currentCommodityExitInShopcarFlag.flag){
+   //       commodity.number = nowCommodityObject.number;
+   //       shopcarStore.itemList.push(commodity)
+   //  }
    })
 }
 

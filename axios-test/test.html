@@ -54,7 +54,7 @@
                 "Content-Type": "application/x-www-form-urlencoded",
               },
             });
-      const res =await axios
+      const res = await axios
               .get("/commodity/promotedShoppingCommodityList")
               .then((suc) => console.log(suc.data))
               .catch((e) => {

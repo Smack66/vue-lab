@@ -5,8 +5,6 @@ export async function sendAllCommodityListRequest() {
     method: "get",
     withCredentials: true,
   }).then((suc) => {
-    // console.log("all shopping");
-    // console.log(suc.data);
     return suc.data;
   });
 }
